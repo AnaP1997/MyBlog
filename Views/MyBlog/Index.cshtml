@@ -1,0 +1,41 @@
+﻿@model IEnumerable<MyBlog.Models.Comment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>My Blog</h1>
+
+    <tbody>
+
+@foreach (var item in Model) {
+        
+                <h1>
+                    @item.Article.Title
+                </h1>
+                    <h4>
+                    @item.Article.Description
+                </h4>
+                
+                    <img src="@item.Article.Image"/>
+
+                    <p>Like</p><p>@item.Article.Likes</p>
+<h3>Coments</h3>         
+            @foreach (var i in Model)
+            {
+
+			<h4>@i.Author</h4>
+                
+            <h5>
+                @i.Text
+            </h5>
+            <p>
+                @i.CreatedOn
+            </p>
+            
+            <p>
+                <a asp-action="Create">Add a comment</a>
+            </p>
+}}
+    </tbody>
+
