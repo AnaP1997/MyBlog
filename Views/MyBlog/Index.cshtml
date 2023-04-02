@@ -1,41 +1,73 @@
-﻿@model IEnumerable<MyBlog.Models.Comment>
+﻿@model IEnumerable<MyBlog.Models.ViewModels.ArticleAndComments>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>My Blog</h1>
 
-    <tbody>
 
-@foreach (var item in Model) {
-        
-                <h1>
-                    @item.Article.Title
-                </h1>
-                    <h4>
-                    @item.Article.Description
-                </h4>
-                
-                    <img src="@item.Article.Image"/>
 
-                    <p>Like</p><p>@item.Article.Likes</p>
-<h3>Coments</h3>         
-            @foreach (var i in Model)
-            {
 
-			<h4>@i.Author</h4>
-                
-            <h5>
-                @i.Text
-            </h5>
-            <p>
-                @i.CreatedOn
-            </p>
-            
-            <p>
-                <a asp-action="Create">Add a comment</a>
-            </p>
-}}
-    </tbody>
+ @foreach (var item in Model) {
+         <div style="display:flex;flex-direction:row;margin-top:100px;">
+              <div>
+            <h1>
+                @Html.DisplayFor(modelItem =>item.Article.Title)
+            </h1>
+
+            <h4>
+                @Html.DisplayFor(modelItem =>item.Article.Description)
+            </h4>
+              </div>
+
+    <img style="width:210px;height:200px;" src="@Html.DisplayFor(modelItem =>item.Article.Image)" />
+                  </div>
+
+    <form onclick="@item.addLike" method="get" style="display:flex;flex-direction:row;">
+        <img type="submit" style="width:30px;height:30px; margin-top:-5px;" src="https://cdn.icon-icons.com/icons2/1097/PNG/512/1485477009-like_78561.png"; />
+		<p> Likes @Html.DisplayFor(modelItem =>item.Article.Likes)</p>
+	</form>
+   
+    <div style="display:flex;flex-direction:row;justify-content:space-evenly;">
+        <div>
+        <h3>Add a Comment:</h3>
+    <form action="/Comments/Create?articleid=@item.Article.Id" method="post" style="display:flex;flex-direction:column;">
+        <input style="height:100px;" type="text" name="comment" id="comment"  />
+        <input action="/MyBlog" type="submit"/>
+		</form>
+
+            <div style="margin-top:100px; display:flex;flex-direction:row;">
+                <h3>Share this article</h3>
+                <img src="https://cdn.icon-icons.com/icons2/790/PNG/512/fb_icon-icons.com_65434.png" style="width:30px;height:30px;margin:5px;" />
+                <img src="https://cdn.icon-icons.com/icons2/1/PNG/256/social_Twitter_38.png" style="width:30px;height:30px;margin:5px;" />
+                <img src="https://cdn.icon-icons.com/icons2/2428/PNG/512/linkedin_black_logo_icon_147114.png" style="width:30px;height:30px;margin:5px;" />
+            </div>
+	</div>
+		
+    <div class="overflow-auto"  style=" height:300px; width:350px;">
+
+		<h3>Coments @item.CommentsCount</h3>
+		
+    @foreach (var c in item.Comments)
+    {
+
+                <div style="border-radius:5px;background-color:#f8f9fa;padding:5px;text-align:center;margin:3px;">
+                    <h6>@Html.DisplayFor(modelItem =>c.Author)</h6>
+
+                    <p>
+                        @Html.DisplayFor(modelItem =>c.Text)
+                    </p>
+                    <p style="font-size:10px;">
+                        @Html.DisplayFor(modelItem =>c.CreatedOn)
+                    </p>
+            </div>
+
+
+
+
+		}
+	</div>
+    </div>}
+
+
 

@@ -8,5 +8,9 @@
         public string Image { get; set; }
         public int Likes { get; set; }
         public DateTime CreatedOn { get; set; }
+
+        //public int AddLike { get {
+            //    Likes = Likes + 1;
+                                  //return Likes; } }
     }
 }

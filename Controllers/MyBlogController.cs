@@ -7,8 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyBlog.Data;
 using MyBlog.Models;
+using MyBlog.Models.ViewModels;
 
-namespace MyBlog.Views
+namespace MyBlog.Controllers
 {
     public class MyBlogController : Controller
     {
@@ -22,7 +23,16 @@ namespace MyBlog.Views
         // GET: MyBlog
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Comment.ToListAsync());
+            var result = new List<ArticleAndComments>();
+            var articles = _context.Article;
+            foreach (var item in articles)
+            {
+                var a = new ArticleAndComments();
+                a.Article=item;
+                a.Comments = _context.Comment.Where(x => x.ArticleId == item.Id).ToList();
+                result.Add(a);
+            }
+            return View(result);
         }
 
         // GET: MyBlog/Details/5
@@ -148,14 +158,16 @@ namespace MyBlog.Views
             {
                 _context.Comment.Remove(comment);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CommentExists(int id)
         {
-          return _context.Comment.Any(e => e.Id == id);
+            return _context.Comment.Any(e => e.Id == id);
         }
     }
+
+
 }
