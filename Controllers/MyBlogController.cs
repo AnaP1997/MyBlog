@@ -2,96 +2,103 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyBlog.Data;
 using MyBlog.Models;
+using MyBlog.Models.ViewModels;
 
 namespace MyBlog.Controllers
 {
-    public class ArticlesController : Controller
+    public class MyBlogController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ArticlesController(ApplicationDbContext context)
+        public MyBlogController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Articles
+        // GET: MyBlog
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Article.ToListAsync());
+            var result = new List<ArticleAndComments>();
+            var articles = _context.Article;
+            foreach (var item in articles)
+            {
+                var a = new ArticleAndComments();
+                a.Article=item;
+                a.Comments = _context.Comment.Where(x => x.ArticleId == item.Id).ToList();
+                result.Add(a);
+            }
+            return View(result);
         }
 
-        // GET: Articles/Details/5
+        // GET: MyBlog/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Article == null)
+            if (id == null || _context.Comment == null)
             {
                 return NotFound();
             }
 
-            var article = await _context.Article
+            var comment = await _context.Comment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (article == null)
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            return View(article);
+            return View(comment);
         }
 
-        // GET: Articles/Create
-        [Authorize(Roles = "Admin")]
+        // GET: MyBlog/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Articles/Create
+        // POST: MyBlog/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles="Admin")]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Image,Likes,CreatedOn")] Article article)
+        public async Task<IActionResult> Create([Bind("Id,ArticleId,Author,Text,CreatedOn")] Comment comment)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(article);
+                _context.Add(comment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(article);
+            return View(comment);
         }
 
-        // GET: Articles/Edit/5
+        // GET: MyBlog/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Article == null)
+            if (id == null || _context.Comment == null)
             {
                 return NotFound();
             }
 
-            var article = await _context.Article.FindAsync(id);
-            if (article == null)
+            var comment = await _context.Comment.FindAsync(id);
+            if (comment == null)
             {
                 return NotFound();
             }
-            return View(article);
+            return View(comment);
         }
 
-        // POST: Articles/Edit/5
+        // POST: MyBlog/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Image,Likes,CreatedOn")] Article article)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ArticleId,Author,Text,CreatedOn")] Comment comment)
         {
-            if (id != article.Id)
+            if (id != comment.Id)
             {
                 return NotFound();
             }
@@ -100,12 +107,12 @@ namespace MyBlog.Controllers
             {
                 try
                 {
-                    _context.Update(article);
+                    _context.Update(comment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ArticleExists(article.Id))
+                    if (!CommentExists(comment.Id))
                     {
                         return NotFound();
                     }
@@ -116,49 +123,51 @@ namespace MyBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(article);
+            return View(comment);
         }
 
-        // GET: Articles/Delete/5
+        // GET: MyBlog/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Article == null)
+            if (id == null || _context.Comment == null)
             {
                 return NotFound();
             }
 
-            var article = await _context.Article
+            var comment = await _context.Comment
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (article == null)
+            if (comment == null)
             {
                 return NotFound();
             }
 
-            return View(article);
+            return View(comment);
         }
 
-        // POST: Articles/Delete/5
+        // POST: MyBlog/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Article == null)
+            if (_context.Comment == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Article'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Comment'  is null.");
             }
-            var article = await _context.Article.FindAsync(id);
-            if (article != null)
+            var comment = await _context.Comment.FindAsync(id);
+            if (comment != null)
             {
-                _context.Article.Remove(article);
+                _context.Comment.Remove(comment);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ArticleExists(int id)
+        private bool CommentExists(int id)
         {
-          return _context.Article.Any(e => e.Id == id);
+            return _context.Comment.Any(e => e.Id == id);
         }
     }
+
+
 }

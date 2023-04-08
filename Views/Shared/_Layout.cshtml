@@ -23,6 +23,13 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About Me</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="MyBlog" asp-action="">My Blog</a>
+                        </li>
+                       
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
@@ -36,10 +43,17 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - MyBlog - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="text-muted">
+    <div style="margin-left:120px;">
+        <div style="display:flex;flex-direction:row;"><p style="color:#EB2227;margin-left:250px;">Email</p><p style="color:#D1DF4F;margin-left:280px;">Phone</p><p style="color:#29A8E0;margin-left:280px;">Location</p></div>
+            <div style="display:flex;flex-direction:row;"> <p style="color:#EB2227;margin-left:250px;">anarosca66@gmail.com</p><p style="color:#D1DF4F;margin-left:150px;">+37368291516</p><p style="color:#29A8E0;margin-left:215px;">Moldova,Chisinau</p></div>
+    </div>
+    
+        
+   
+        <div class="container" >
+             
+            <p style="text-align:center;">&copy; 2023 - MyBlog </p>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
