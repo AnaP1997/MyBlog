@@ -8,5 +8,7 @@
         public string Image { get; set; }
         public int Likes { get; set; }
         public DateTime CreatedOn { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 }

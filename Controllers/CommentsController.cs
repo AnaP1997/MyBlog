@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using MyBlog.Data;
 using MyBlog.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyBlog.Controllers
 {
@@ -54,19 +55,19 @@ namespace MyBlog.Controllers
         // POST: Comments/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int articleid,string comment)
         {
             var Comment = new Comment();
             Comment.ArticleId=articleid;
             Comment.Text = comment;
-            Comment.Author = @User.Identity?.Name;
+            Comment.Author = User.Identity?.Name;
             Comment.CreatedOn = DateTime.Now;
 
             _context.Add(Comment);
             await _context.SaveChangesAsync();
-            return RedirectToAction();
+            return RedirectToAction("Index", "MyBlog");
         }
 
         // GET: Comments/Edit/5
